@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "scripts": {
     "start": "node src/server.js",
+    "test": "mocha test/**/*.test.js",
+    "test:coverage": "nyc --reporter=lcov --reporter=text mocha test/**/*.test.js",
     "check": "mocha test/**/*.test.js",
     "dev": "node src/server.js"
   },
@@ -15,6 +17,7 @@
     "chai-http": "^4.4.0",
     "dotenv": "^17.2.1",
     "mocha": "^10.3.0",
+    "nyc": "^15.1.0",
     "supertest": "^6.3.4"
   }
 }
