@@ -23,7 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 .env
-package-lock.json
+# package-lock.json
 # Test coverage
 coverage/
 .nyc_output/
