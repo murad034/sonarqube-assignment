@@ -1,0 +1,59 @@
+name: my 3rd assignment using aws cic/cd pipeline
+on:
+  push:
+    branches: [main]
+
+jobs:
+  testJob:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests and save results
+        run: npm run check | tee test-results.txt
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: test-results.txt
+
+  deployJob:
+    runs-on: self-hosted
+    needs: testJob
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download test results artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: test-results
+          path: artifacts
+
+      - name: Display test results
+        run: cat artifacts/test-results.txt || true
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run the application with PM2
+        run: |
+          ls -a
+          pm2 status
+          # Delete node-app process if it exists
+          pm2 delete node-app || true
+          # Create a background process name node-app
+          pm2 start "npm start" --name="node-app"
+
+          # Save the process list
+          pm2 save
